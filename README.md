@@ -20,7 +20,7 @@ While the setup can be a straight forward for some, it is not intuitive and easy
 
 Make sure you can turn off/on the plug by using a command line.
 
-My API for 433 mhz plugs is included in this project
+My API for 433 mhz plugs is included in this project.
 
 ### SmartThings
 Please see my other separated project for the SmartThings Device Handler which communicates with this Gateway over your local network.
