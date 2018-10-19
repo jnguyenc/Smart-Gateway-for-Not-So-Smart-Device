@@ -1,6 +1,8 @@
 # Smart Gateway for Not So Smart Devices
 This is a nodeJS application to provide a web interface for all of your wifi and 433mhz electrical plugs, combined.  It simuteneuolsy serves as a gateway for SmartThings, so those not-so-smart plugs can be integrated and controled by your SmartThings and its automations.
 
+The web interface of this Gateway is highly and easily customizibled.
+
 ## Currently supported:
 BestTek (Tuya based) wifi plugs
 
