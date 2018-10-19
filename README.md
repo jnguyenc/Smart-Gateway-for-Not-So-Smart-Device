@@ -1,16 +1,16 @@
 # Smart Gateway for Not So Smart Devices
 This is a nodeJS application to provide a web interface for all of your wifi and 433mhz electrical plugs, combined.  It simuteneuolsy serves as a gateway for SmartThings, so those not-so-smart plugs can be integrated and controled by your SmartThings and its automations.
 
-# Currently supported:
+## Currently supported:
 BestTek (Tuya based) wifi plugs
 Etekcity 433 mhz plugs
 
-# Setup/Configurations:
+## Setup/Configurations:
 
-## For Wifi Plugs:
+### For Wifi Plugs:
 Install the required API https://github.com/codetheweb/tuyapi.  Follow the instructions on that site to get the required parameters for each device.  Test and make sure the API works before moving on to install this Gateway.
 
-## For 433 Mhz Plugs:
+### For 433 Mhz Plugs:
 Follow this guide to set up a 433 mhz transmitter https://www.samkear.com/hardware/control-power-outlets-wirelessly-raspberry-pi.  Step 3 may be skipped.
 
 It's recommended to use https://github.com/ninjablocks/433Utils to keep a clean installation.
@@ -19,5 +19,5 @@ While the setup can be a straight forward for some, it is not intuitive and easy
 
 Make sure you can turn off/on the plug by using a command line.
 
-## SmartThings
+### SmartThings
 Please see my other separated project for the SmartThings Device Handler which communicates with this Gateway over your local network.
