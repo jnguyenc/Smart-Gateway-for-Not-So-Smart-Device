@@ -3,6 +3,7 @@ This is a nodeJS application to provide a web interface for all of your wifi and
 
 ## Currently supported:
 BestTek (Tuya based) wifi plugs
+
 Etekcity 433 mhz plugs
 
 ## Setup/Configurations:
