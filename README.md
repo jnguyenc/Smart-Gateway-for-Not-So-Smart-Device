@@ -26,3 +26,4 @@ My API for 433 mhz plugs is included in this project.
 
 ### SmartThings
 Please see my other separated project for the SmartThings Device Handler which communicates with this Gateway over your local network.
+https://github.com/jnguyenc/SmartThings-DHL-for-Wifi-and-433-Plugs
