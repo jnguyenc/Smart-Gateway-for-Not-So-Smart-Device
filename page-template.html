@@ -1,0 +1,245 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0">
+<style>
+.devices{
+width: 30%;
+}
+
+@media only screen and (max-width: 768px){
+.devices{
+width: 100%;
+}
+}
+
+.device{
+border-radius: 15px;
+border:1px solid gray;
+padding: 10px; 
+width: 90%;
+height: 63px;
+margin: 10px 5px;
+position: relative;
+display: grid;
+grid-template-columns: 65px 60% 65px;
+}
+
+.device>div{
+height:60px;
+width: 60px;
+}
+
+.status{
+border-radius: 10px;
+background-image: url("http://nguyen.dnset.com/tuya/light-on.png");
+background-size:75%;
+background-position: center; 
+background-repeat: no-repeat;
+border: 1px solid #ccc;
+background-color:#fff;
+}
+
+.status.loading{
+background-image: url("http://nguyen.dnset.com/tuya/loader2.gif");
+background-repeat: no-repeat;
+background-size:50px;
+background-position: center; 
+}
+
+.switch{
+border-radius: 30px;
+background-image: url("http://nguyen.dnset.com/tuya/light.png");
+background-size:75%;
+background-position: center;
+background-repeat: no-repeat;
+border: 1px solid #ccc;
+}
+
+.switch:hover{
+border: 1px solid #4ba0e5;
+cursor: pointer;
+}
+
+.pannel{
+min-width:170px;
+margin-left:10px;
+margin-right:10px;
+}
+
+.pannel>span{
+display:block;
+}
+
+span.title{
+font-size:16px;
+font-weight:bold;
+padding-bottom:9px;
+}
+
+span.info{
+font-size:12px;
+font-weight:lighter;
+color:#ccc;
+padding-bottom:5px;
+
+}
+
+span.state{
+font-size:12px;
+text-transform: uppercase;
+}
+
+.on{
+border-color: #4ba0e5;
+}
+
+.on>.switch{
+border-color: #4ba0e5;
+}
+
+.on>.switch:hover{
+border: 1px solid #ccc;
+cursor: pointer;
+}
+
+.on>.status{
+background-color: #4ba0e5;
+border-color: #4ba0e5;
+}
+
+.hidden{
+display:none;
+}
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+//var timestamp = {};
+$(document).ready(function(){
+	config();
+});
+function config(){
+	// Call either configuration method below.  Set the server response accordingly
+	//------------------------------------
+	// this method saves one server call, data does not get updated after initial configuration
+	getConfigFromHtml();
+	
+	//getConfigFromServer();
+}
+function getConfigFromHtml(){
+	var devicesInfo = JSON.parse($("#devicesData").html());
+	//console.log(devicesInfo);
+	configurate(devicesInfo);
+}
+function getConfigFromServer(){
+	var urlCommand = "/json";
+	$.get(urlCommand, function(data){
+		var devicesInfo = JSON.parse(data);
+		configurate(devicesInfo)
+	})
+	.done(function() {
+		//alert( "Success retreiving configurations" );
+	})
+	.fail(function() {
+		alert( "Error retreviing configurations from server" );
+	})
+	.always(function() {
+		//alert( "Done" );
+	});
+}
+function configurate(devicesInfo){
+		var deviceTemplate = $("#deviceTemplate").html();
+		var devicesHtml = "";
+		for(var i in devicesInfo.devices){
+			var deviceHtml = deviceTemplate;
+			deviceHtml = deviceHtml.replace(/#devId#/g, devicesInfo.devices[i]["id"]);
+			deviceHtml = deviceHtml.replace(/#devState#/g, (devicesInfo.devices[i]["state"]? "on":"off"));
+			deviceHtml = deviceHtml.replace(/#devName#/g, devicesInfo.devices[i]["name"]);
+			devicesHtml +=	deviceHtml + "\n";
+		}	
+		$("#devices").html(devicesHtml);
+		addClickAction();
+}
+function addClickAction(){
+	$("div.switch").click(function(){
+		switchClick(this);
+    });
+}
+function switchClick(e){
+	var p = $(e).parent();	//get the parent element
+	var currentState = p.hasClass("on");	//turned-on device has a class on
+	var devId = p.attr("id");	//get the device id
+	var s = $("#"+ devId + ">div.pannel>span.state");
+	s.html("Turning " + (currentState?"off":"on") + "...");
+	var statusEle = $("#"+ devId + ">div.status");
+	statusEle.addClass("loading");
+	//setTimeout(function(){ statusEle.removeClass("loading"); }, 3000);
+	toggleDevice(devId, currentState);
+}
+function toggleDevice(devId, state){
+	//this works fine, too.
+	//var command = "devId="+devId+"&command=state-"+(state?"off":"on");
+	//------------------------------
+	var command = {"dev_id":devId, "command":"state-"+(state?"off":"on")};
+	sendCommand(command);
+}
+function sendCommand(command){
+	// url can actualy have parameters, or command object will be converted/add to with and after the ?
+	var url = "/";
+	//timestamp.setStart = new Date().getTime() / 1000;
+	$.get(url, command, function(data){
+		//timestamp.setStop = new Date().getTime() / 1000;
+		//alert(timestamp.setStop - timestamp.setStart);
+		var r = JSON.parse(data);
+		//update the interface
+		updateDevice(r.dev_id, r.dev_state);
+	});
+}
+function updateDevice(devId, state){
+	//get the device main div
+	var d = $("#"+devId);	
+	//get the span state element
+	var s = $("#"+ devId + ">div.pannel>span.state");
+	var statusEle = $("#"+ devId + ">div.status");
+	statusEle.removeClass("loading");
+	//alert(state);
+	if(state === true){
+		d.addClass("on");
+		d.removeClass("off")
+		s.html("Turned On");
+	}
+	else if(state === false){
+		d.removeClass("on");
+		s.html("Turned Off");
+	}
+	else if (state == "unknown"){
+		d.removeClass("on");
+		s.html("Not supported");
+	}
+}
+// Not in-use
+function updateDevices(){
+	$.each($(".device"), function(i, d){
+		var devId = $(d).attr("id");
+		getDeviceState(devId);
+	});
+}
+function getDeviceState(devId){
+	var command = {"dev_id":devId, "command":"getStatus"};
+	sendCommand(command);
+}
+
+</script>
+</head>
+<body>
+<div id="devices" class="devices">#devices#</div>
+<div id="deviceTemplate" class="hidden">
+	<div id="#devId#" class="device  #devState#">
+		<div class="status"></div>
+		<div class="pannel"><span class="title">#devName#</span><span class="info">#devId#</span><span class="state">#devState#</span></div>
+		<div class="switch"></div>
+	</div>
+</div>
+<div id="devicesData" class="hidden">#devicesData#</div>
+</body>
+</html>
