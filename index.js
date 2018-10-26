@@ -1,7 +1,6 @@
 /*=========================================================
 To Do:
-1. Get actual device state at inital load
-2. Save/load 433 device state from a file to simmulate get state
+1. Get actual devices' states at inital load
 
 =========================================================*/
 //===== Global variables ==================================
@@ -26,6 +25,19 @@ function getDevice(devId){
 		return d.id == devId;
 	});
 	return device[0];
+}
+
+function saveDevicesInfo(){
+	//Save devicesInfor to file to preserve devices' states
+	//console.log("Writing to file: " + JSON.stringify(devicesInfo));
+	fs.writeFile(devicesFilePath, JSON.stringify(devicesInfo), 'utf8', function(err, data){
+		if(err){
+			console.log(err);
+		}
+		else{
+			//console.log("File written successfully");
+		}
+	});
 }
 
 //====== Start the HTTP Server Listening to request =======
@@ -88,7 +100,7 @@ function onRequest(request, response){
 	//console.log(JSON.stringify(dev));
 	
 	//set up the current device to perform command
-	let currDevice = new Device[dev.type]({id: dev.id,key: dev.key,ip: dev.ip});
+	let currDevice = new Device[dev.type]({id:dev.id, key:dev.key, ip:dev.ip});
 
 	//processing client command	
 	switch(command) {
@@ -110,6 +122,7 @@ function onRequest(request, response){
 	//=====================================================
 	//====== Error Handling functions
 	function errDeviceNotSupported(devId){
+		//currently not used
 		prepareResponse("Device not supported: " + devId);
 	}
 	
@@ -122,7 +135,7 @@ function onRequest(request, response){
 	}
 	
 	function errDeviceCommand(err){
-		prepareResponse("Device command or network error");
+		prepareResponse("Network error, device offline, or unable to execute device command");
 	}
 	//=====================================================
 	//===== set and get functions to the device ===========
@@ -140,10 +153,11 @@ function onRequest(request, response){
 				//console.log("dev.state="+dev.state);
 				//console.log("devState="+devState);
 				if(devState != null){
-					//update the dev configurations only not null, Dev433 needs this
+					//update the devicesInfo only if devState is not null, needs this for Dev433 devices
 					dev.state = devState;
 				}
 				prepareResponse("OK");
+				saveDevicesInfo();
 			},
 			err => {
 				errDeviceCommand(err);
@@ -153,6 +167,8 @@ function onRequest(request, response){
 	//=====================================================
 	
 	function prepareResponse(msg){
+		
+		// default devState for not-found device (no match dev_id)
 		let devState = "unknown";
 		if(typeof dev != "undefined" && typeof dev.state != "undefined"){
 			devState = dev.state;
