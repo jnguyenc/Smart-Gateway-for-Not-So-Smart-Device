@@ -159,6 +159,7 @@ function configurate(devicesInfo){
 		}	
 		$("#devices").html(devicesHtml);
 		addClickAction();
+		addRefreshAction();
 }
 function addClickAction(){
 	$("div.switch").click(function(){
@@ -177,11 +178,22 @@ function switchClick(e){
 	toggleDevice(devId, currentState);
 }
 function toggleDevice(devId, state){
-	//this works fine, too.
-	//var command = "devId="+devId+"&command=state-"+(state?"off":"on");
-	//------------------------------
 	var command = {"dev_id":devId, "command":"state-"+(state?"off":"on")};
 	sendCommand(command);
+}
+function addRefreshAction(){
+	$("span.title").click(function(){
+		refreshAction(this);
+	});
+}
+function refreshAction(e){
+	var p = $(e).parent().parent();	//get the parent's parent element
+	var devId = p.attr("id");	//get the device id
+	var s = $("#"+ devId + ">div.pannel>span.state");
+	s.html("Refreshing");
+	var statusEle = $("#"+ devId + ">div.status");
+	statusEle.addClass("loading");
+	sendCommand({"dev_id":devId, "command":"status"});
 }
 function sendCommand(command){
 	// url can actualy have parameters, or command object will be converted/add to with and after the ?
