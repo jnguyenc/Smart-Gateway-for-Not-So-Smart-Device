@@ -53,7 +53,7 @@ metadata {
 
 	preferences {
 		input("deviceID", "text", title: "Device ID", required: true, displayDuringSetup: true)
-		input("gatewayAddress", "text", title: "Gateway Address", defaultValue: "192.168.1.28:8083", required: false, displayDuringSetup: true)
+		//input("gatewayAddress", "text", title: "Gateway Address", defaultValue: "192.168.1.28:8082", required: false, displayDuringSetup: true)
 		input name: "refreshRate", type: "enum", title: "Refresh Rate", options: rates, description: "Select Refresh Rate", required: false
 	}
 }
