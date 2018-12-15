@@ -2,7 +2,7 @@ def getGatewayAddr(){
 	// SmartThing does not support global variables.  Use this special Groovy method to set up one
 	// Called by gatewayAddr - no *get*, no *()*, captialized 1st letter after *get* in the method name becomes lowercased
 	// set IP:port appropriately
-	return "192.168.1.28:8082"
+	return "192.168.1.52:8082"	//cicada
 }
 
 //	===========================================================
