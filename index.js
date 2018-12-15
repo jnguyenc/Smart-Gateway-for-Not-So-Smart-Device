@@ -105,11 +105,11 @@ function onRequest(request, response){
 	//processing client command	
 	switch(command) {
 		case "state-on":
-			setDeviceState({set: 1});
+			setDeviceState({set: true});
 		break;
 		
 		case "state-off":
-			setDeviceState({set: 0});
+			setDeviceState({set: false});
 		break;
 		
 		case "status":
