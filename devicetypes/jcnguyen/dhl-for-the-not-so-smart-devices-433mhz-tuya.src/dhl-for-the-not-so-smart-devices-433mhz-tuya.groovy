@@ -2,7 +2,7 @@ def getGatewayAddr(){
 	// SmartThing does not support global variables.  Use this special Groovy method to set up one
 	// Called by gatewayAddr - no *get*, no *()*, captialized 1st letter after *get* in the method name becomes lowercased
 	// set IP:port appropriately
-	return "192.168.1.52:8082"	//cicada
+	return "192.168.1.14:8082"	//cicada
 }
 
 //	===========================================================
@@ -33,15 +33,19 @@ metadata {
 		}
         
 		standardTile("refresh", "capability.refresh", width: 2, height: 2,  decoration: "flat") {
-			state "default", label:"Refresh Gateway", action:"refresh.refresh", icon:"st.secondary.refresh"
+			state "default", label:"Refresh Inteface", action:"refresh.refresh", icon:"st.secondary.refresh"
 		}
-		
-		standardTile("syncFromGateway", "device.syncFromGateway", width: 2, height: 2,  decoration: "flat") {
+        
+        standardTile("syncToGateway", "device.syncToGateway", width: 2, height: 2,  decoration: "flat") {
+			state "default", label:"Sync Gateway", action:"syncToGateway", icon:"st.Kids.kids8"
+		}
+        
+        standardTile("syncFromGateway", "device.syncFromGateway", width: 2, height: 2,  decoration: "flat") {
 			state "default", label:"Sync from Gateway", action:"syncFromGateway", icon:"st.Kids.kids8"
 		}
         
 		main("switch")
-		details("switch", "refresh", "syncFromGateway")
+		details("switch", "refresh", "syncToGateway")
 	}
 
 	def rates = [:]
@@ -108,6 +112,10 @@ def off() {
 }
 
 def refresh(){
+	syncFromGateway()
+}
+
+def syncToGateway(){
 	log.info "Device is ${device.currentValue("switch")}. Sending refresh command."
 	if( device.currentValue("switch") == "on"){
 		on()
