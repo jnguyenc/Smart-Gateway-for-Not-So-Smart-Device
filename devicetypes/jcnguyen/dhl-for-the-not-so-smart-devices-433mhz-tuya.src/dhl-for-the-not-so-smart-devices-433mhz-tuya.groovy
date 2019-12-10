@@ -10,13 +10,15 @@ metadata {
 	definition (name: "DHL for the Not So Smart Devices (433mhz, Tuya)",
 				namespace: "jcnguyen",
 				author: "John Nguyen",
+                mnmn:"SmartThings",
+                vid: "generic-switch",
 				energyMonitor: "Standard") {
 		capability "Switch"
 		capability "refresh"
 		capability "polling"
 		capability "Sensor"
 		capability "Actuator"
-        
+        capability "Health Check"
         command "syncFromGateway"
 	}
 	tiles(scale: 2) {
